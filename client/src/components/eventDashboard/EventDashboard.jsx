@@ -11,7 +11,14 @@ const EventDashboard = () => {
         const fetchEvents = async () => {
             try {
                 const res = await axios.get('http://localhost:6600/api/events', { withCredentials: true });
-                setEvents(res.data);
+                const eventsWithAttendeeCount = await Promise.all(res.data.map(async (event) => {
+                    const attendeesRes = await axios.get(`http://localhost:6600/api/events/${event._id}/attendees`, { withCredentials: true });
+                    return {
+                        ...event,
+                        attendeeCount: attendeesRes.data.length, // Assuming attendeesRes.data contains the list of attendees
+                    };
+                }));
+                setEvents(eventsWithAttendeeCount);
             } catch (error) {
                 console.error('Error fetching events:', error);
             }
@@ -41,12 +48,13 @@ const EventDashboard = () => {
     const handleRegisterEvent = async (eventId) => {
         try {
             const res = await axios.post(`http://localhost:6600/api/events/${eventId}/register`, {}, { withCredentials: true });
-            
             alert(res.data.msg);
-    
+
             // Refresh events list to update attendee count and details
             const updatedEvents = events.map(event =>
-                event._id === eventId ? { ...event, attendeeCount: res.data.attendeeCount, attendees: res.data.attendees } : event
+                event._id === eventId 
+                    ? { ...event, attendeeCount: res.data.attendeeCount, attendees: res.data.attendees } 
+                    : event
             );
             setEvents(updatedEvents);
         } catch (error) {

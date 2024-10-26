@@ -117,12 +117,17 @@ router.post('/:eventId/register', verifyToken, async (req, res) => {
         await event.save();
 
         const updatedEvent = await Event.findById(req.params.eventId).populate('attendees', 'name email');
-        res.status(200).json({ msg: 'Registration successful', attendeeCount: updatedEvent.attendees.length, attendees: updatedEvent.attendees });
+        res.status(200).json({
+            msg: 'Registration successful',
+            attendeeCount: updatedEvent.attendees.length, // Correctly use populated attendees
+            attendees: updatedEvent.attendees // Use populated details
+        });
     } catch (err) {
         console.error('Error in registration:', err);
         res.status(500).json({ msg: 'Error registering for event' });
     }
 });
+
 
 // Get attendees for a specific event
 router.get('/:eventId/attendees', verifyToken, async (req, res) => {
