@@ -8,6 +8,8 @@ import GoogleCallback from './components/callBack/GoogleCallback';
 import EventCreation from './components/eventCreation/EventCreation';
 import EventDashboard from './components/eventDashboard/EventDashboard';
 import EditEvent from './components/editEvent/EditEvent';
+import PaymentPage from './components/paymentPage/PaymentPage';
+import TicketPage from './components/ticket/Ticket';
 
 const App = () => {
     return (
@@ -23,6 +25,9 @@ const App = () => {
                         <Route path="/eventDashboard" element={<EventDashboard/>} />
 
                         <Route path="/events/:eventId/edit" element={<EditEvent />} />
+
+                        <Route path="/events/:eventId/payment" element={<PaymentPage/>} />
+                        <Route path="/events/:eventId/ticket" element={<TicketPage/>} />
 
                         <Route path="/auth/google/callback" element={<GoogleCallback />} /> {/* Add this route */}
                     </Routes>

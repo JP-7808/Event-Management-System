@@ -5,7 +5,9 @@ import cors from 'cors';
 import passport from 'passport';
 import authRoute from './routes/auth.js';
 import eventRoute from './routes/event.js';
+import ticketRoute from './routes/ticket.js'
 import cookieParser from 'cookie-parser';
+
 
 
 dotenv.config();
@@ -39,6 +41,7 @@ app.use(passport.initialize());
 // Routes
 app.use('/api/auth', authRoute);
 app.use('/api/events', eventRoute);
+app.use('/api/events', ticketRoute);
 
 const PORT = process.env.PORT || 6600;
 app.listen(PORT, () => {

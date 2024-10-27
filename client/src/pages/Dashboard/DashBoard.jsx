@@ -51,21 +51,9 @@ const EventDashboard = () => {
         navigate(`/events/${eventId}/edit`);
     };
 
-    const handleRegisterEvent = async (eventId) => {
-        try {
-            const res = await axios.post(`http://localhost:6600/api/events/${eventId}/register`, {}, { withCredentials: true });
-            alert(res.data.msg);
-
-            // Update the events state with the new attendee data after registration
-            const updatedEvents = events.map(event =>
-                event._id === eventId ? { ...event, attendeeCount: res.data.attendeeCount, attendees: res.data.attendees } : event
-            );
-            setEvents(updatedEvents);
-            setFilteredEvents(updatedEvents);
-        } catch (error) {
-            console.error(`Error registering for event ${eventId}:`, error);
-            alert('Failed to register for the event. Please try again later.');
-        }
+    const handleRegisterEvent = (eventId) => {
+        // Navigate to payment page instead of directly registering
+        navigate(`/events/${eventId}/payment`);
     };
 
     const handleSearch = (e) => {
@@ -110,11 +98,9 @@ const EventDashboard = () => {
                                             </button>
                                         </div>
                                     ) : isRegistered ? (
-                                        <p className="already-registered">Already Registered</p>
+                                        <button className="view-ticket-btn" onClick={() => navigate(`/events/${event._id}/ticket`)}>View Ticket</button>
                                     ) : (
-                                        <button className="register-event-btn" onClick={() => handleRegisterEvent(event._id)}>
-                                            Register for Event
-                                        </button>
+                                        <button className="register-event-btn" onClick={() => handleRegisterEvent(event._id)}>Register for Event</button>
                                     )}
                                 </li>
                             );
