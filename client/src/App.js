@@ -10,6 +10,7 @@ import EventDashboard from './components/eventDashboard/EventDashboard';
 import EditEvent from './components/editEvent/EditEvent';
 import PaymentPage from './components/paymentPage/PaymentPage';
 import TicketPage from './components/ticket/Ticket';
+import AttendeesPage from './components/attendees/Attendees';
 
 const App = () => {
     return (
@@ -28,6 +29,7 @@ const App = () => {
 
                         <Route path="/events/:eventId/payment" element={<PaymentPage/>} />
                         <Route path="/events/:eventId/ticket" element={<TicketPage/>} />
+                        <Route path="/events/:eventId/attendees" element={<AttendeesPage />} />
 
                         <Route path="/auth/google/callback" element={<GoogleCallback />} /> {/* Add this route */}
                     </Routes>

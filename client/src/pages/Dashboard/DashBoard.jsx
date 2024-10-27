@@ -52,7 +52,6 @@ const EventDashboard = () => {
     };
 
     const handleRegisterEvent = (eventId) => {
-        // Navigate to payment page instead of directly registering
         navigate(`/events/${eventId}/payment`);
     };
 
@@ -78,7 +77,6 @@ const EventDashboard = () => {
                 <ul className="event-list">
                     {filteredEvents.length > 0 ? (
                         filteredEvents.map(event => {
-                            // Check if the current user is already registered for this event
                             const isRegistered = event.attendees.some(attendee => attendee._id === currentUserId);
                             
                             return (
