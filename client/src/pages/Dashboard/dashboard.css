@@ -60,6 +60,23 @@
     margin-top: 15px;
 }
 
+.already-registered {
+    color: #ffffff;              
+    background-color: #28a745;    
+    padding: 10px 15px;            
+    border-radius: 5px;           
+    font-weight: bold;           
+    font-size: 14px;              
+    text-align: center;          
+    display: inline-block;        
+    margin-top: 10px;             
+}
+
+.already-registered:hover {
+    background-color: #218838;    
+    cursor: default;              
+}
+
 .view-attendees-btn,
 .edit-event-btn,
 .register-event-btn {

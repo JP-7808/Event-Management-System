@@ -15,15 +15,16 @@ const EventDashboard = () => {
         const fetchEvents = async () => {
             try {
                 const res = await axios.get('http://localhost:6600/api/events', { withCredentials: true });
-                const eventsWithAttendeeCount = await Promise.all(res.data.map(async (event) => {
+                const eventsWithAttendeeData = await Promise.all(res.data.map(async (event) => {
                     const attendeesRes = await axios.get(`http://localhost:6600/api/events/${event._id}/attendees`, { withCredentials: true });
                     return {
                         ...event,
+                        attendees: attendeesRes.data,
                         attendeeCount: attendeesRes.data.length,
                     };
                 }));
-                setEvents(eventsWithAttendeeCount);
-                setFilteredEvents(eventsWithAttendeeCount);
+                setEvents(eventsWithAttendeeData);
+                setFilteredEvents(eventsWithAttendeeData);
             } catch (error) {
                 console.error('Error fetching events:', error);
             }
@@ -55,6 +56,7 @@ const EventDashboard = () => {
             const res = await axios.post(`http://localhost:6600/api/events/${eventId}/register`, {}, { withCredentials: true });
             alert(res.data.msg);
 
+            // Update the events state with the new attendee data after registration
             const updatedEvents = events.map(event =>
                 event._id === eventId ? { ...event, attendeeCount: res.data.attendeeCount, attendees: res.data.attendees } : event
             );
@@ -87,22 +89,36 @@ const EventDashboard = () => {
                 <h2>Your Events</h2>
                 <ul className="event-list">
                     {filteredEvents.length > 0 ? (
-                        filteredEvents.map(event => (
-                            <li className="event-item" key={event._id}>
-                                <h3 className="event-title">{event.title}</h3>
-                                <p className="event-description">{event.description}</p>
-                                <p className="event-location">{event.location}</p>
-                                <p className="event-ticket-price">Price: {event.ticketPrice}</p>
-                                {event.organizerId === currentUserId ? (
-                                    <div className="event-actions">
-                                        <button className="view-attendees-btn" onClick={() => handleViewAttendees(event._id)}>View Attendees ({event.attendeeCount || 0})</button>
-                                        <button className="edit-event-btn" onClick={() => handleEditEvent(event._id)}>Edit Event</button>
-                                    </div>
-                                ) : (
-                                    <button className="register-event-btn" onClick={() => handleRegisterEvent(event._id)}>Register for Event</button>
-                                )}
-                            </li>
-                        ))
+                        filteredEvents.map(event => {
+                            // Check if the current user is already registered for this event
+                            const isRegistered = event.attendees.some(attendee => attendee._id === currentUserId);
+                            
+                            return (
+                                <li className="event-item" key={event._id}>
+                                    <h3 className="event-title">{event.title}</h3>
+                                    <p className="event-description">{event.description}</p>
+                                    <p className="event-location">{event.location}</p>
+                                    <p className="event-ticket-price">Price: {event.ticketPrice}</p>
+                                    
+                                    {event.organizerId === currentUserId ? (
+                                        <div className="event-actions">
+                                            <button className="view-attendees-btn" onClick={() => handleViewAttendees(event._id)}>
+                                                View Attendees ({event.attendeeCount || 0})
+                                            </button>
+                                            <button className="edit-event-btn" onClick={() => handleEditEvent(event._id)}>
+                                                Edit Event
+                                            </button>
+                                        </div>
+                                    ) : isRegistered ? (
+                                        <p className="already-registered">Already Registered</p>
+                                    ) : (
+                                        <button className="register-event-btn" onClick={() => handleRegisterEvent(event._id)}>
+                                            Register for Event
+                                        </button>
+                                    )}
+                                </li>
+                            );
+                        })
                     ) : (
                         <p className="no-events">No events found.</p>
                     )}
